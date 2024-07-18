@@ -1,4 +1,3 @@
-# color_detector.py
 
 import cv2
 import imutils
@@ -42,17 +41,17 @@ class ColorDetector:
         if len(cnts_up) > 0:
             c = max(cnts_up, key=cv2.contourArea)
             M = cv2.moments(c)
-            cX = int(M["m10"] / M["m00"])
-
-            if cX < (width // 2 - 35):
-                PressKey(A)
-                key = True
-                self.currentKey.append(A)
+            if M["m00"] != 0:
+                cX = int(M["m10"] / M["m00"])
+                if cX < (width // 2 - 35):
+                    PressKey(A)
+                    key = True
+                    self.currentKey.append(A)
             
-            elif cX > (width // 2 + 35):
-                PressKey(D)
-                key = True
-                self.currentKey.append(D)
+                elif cX > (width // 2 + 35):
+                    PressKey(D)
+                    key = True
+                    self.currentKey.append(D)
         
         if len(cnts_down) > 0:
             PressKey(Space)
@@ -66,20 +65,17 @@ class ColorDetector:
         cv2.putText(img, 'RIGHT', (440, 30), cv2.FONT_HERSHEY_DUPLEX, 1, (139, 0, 0))
 
         img = cv2.rectangle(img, (2*(width//5), 3*height//4), (3*width//5, height), (0, 255, 0), 1)
-        cv2.putText(img, 'NITRO', (2*(width//5) + 20, height-10), cv2.FONT_HERSHEY_DUPLEX, 1, (139, 0, 0))
+        cv2.putText(img, 'SET', (2*(width//5) + 20, height-10), cv2.FONT_HERSHEY_DUPLEX, 1, (139, 0, 0))
 
         cv2.imshow("Steering", img)
 
         if not key and len(self.currentKey) != 0:
             for current in self.currentKey:
                 ReleaseKey(current)
+            self.currentKey = []
 
         return img
 
     def stop(self):
         cv2.destroyAllWindows()
         self.cam.stop()
-
-
-
-
