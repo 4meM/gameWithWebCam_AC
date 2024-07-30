@@ -15,7 +15,7 @@ ALTO = 600
 # Colores
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
-ROJO = (255, 0, 0)
+AMARILLO = (255, 255, 0)
 
 # Configuración de la pantalla
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
@@ -62,10 +62,10 @@ class ProblemaMatematico:
 
 speed = 10
 
-# Clase Cubo
-class Cubo:
+# Clase Circulo
+class Circulo:
     def __init__(self):
-        self.rect = pygame.Rect(ANCHO // 2 - 25, ALTO - 50, 50, 50)  # Cubo en la parte inferior de la pantalla
+        self.rect = pygame.Rect(ANCHO // 2 - 25, ALTO - 50, 50, 50)  # Posición inicial del círculo
 
     def mover(self, direccion):
         if direccion == 'izquierda' and self.rect.left > 0:
@@ -78,11 +78,11 @@ class Cubo:
             self.rect.y += speed
 
     def mostrar(self, pantalla):
-        pygame.draw.rect(pantalla, ROJO, self.rect)
+        pygame.draw.circle(pantalla, AMARILLO, (self.rect.x + 25, self.rect.y + 25), 25)
 
 # Inicializacion de objetos
 problema = ProblemaMatematico()
-cubo = Cubo()
+circulo = Circulo()
 detector_color = ColorDetector()  # Instancia de ColorDetector
 
 puntuacion = 0
@@ -104,25 +104,25 @@ while corriendo:
     # Control de la eleccion de respuesta manualmente
     teclas = pygame.key.get_pressed()
     if teclas[pygame.K_a]:
-        cubo.mover('izquierda')
+        circulo.mover('izquierda')
     elif teclas[pygame.K_d]:
-        cubo.mover('derecha')
+        circulo.mover('derecha')
     elif teclas[pygame.K_w]:
-        cubo.mover('arriba')
+        circulo.mover('arriba')
     elif teclas[pygame.K_s]:
-        cubo.mover('abajo')
+        circulo.mover('abajo')
 
     # Integracion con ColorDetector para controlar acciones del juego
     if detector_color.currentKey:
         for key in detector_color.currentKey:
             if key == A:
-                cubo.mover('izquierda')
+                circulo.mover('izquierda')
             elif key == D:
-                cubo.mover('derecha')
+                circulo.mover('derecha')
             elif key == W:
-                cubo.mover('arriba')
+                circulo.mover('arriba')
             elif key == S:
-                cubo.mover('abajo')
+                circulo.mover('abajo')
 
     pantalla.fill(NEGRO)
 
@@ -153,10 +153,10 @@ while corriendo:
     pygame.draw.rect(pantalla, BLANCO, marco_derecha, 3)
 
     # Verificar colisiones
-    if cubo.rect.colliderect(marco_izquierda):
+    if circulo.rect.colliderect(marco_izquierda):
         eleccion_usuario = 'izquierda'
         respuesta_enviada = True
-    elif cubo.rect.colliderect(marco_derecha):
+    elif circulo.rect.colliderect(marco_derecha):
         eleccion_usuario = 'derecha'
         respuesta_enviada = True
 
@@ -166,7 +166,7 @@ while corriendo:
         problema.generar_problema()
         respuesta_enviada = False  # Reiniciar la bandera
 
-    cubo.mostrar(pantalla)
+    circulo.mostrar(pantalla)
 
     puntuacion_texto = fuente.render(f"Puntuacion: {puntuacion}", True, BLANCO)
     pantalla.blit(puntuacion_texto, (10, 10))
@@ -179,6 +179,7 @@ while corriendo:
 detector_color.stop()
 pygame.quit()
 sys.exit()
+
 
 
 
